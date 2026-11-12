@@ -1,0 +1,131 @@
+{
+    "name": "pl_ecommerce_main",
+    "properties": {
+        "activities": [
+            {
+                "name": "run_bronze",
+                "type": "ExecutePipeline",
+                "dependsOn": [],
+                "policy": {
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "pipeline": {
+                        "referenceName": "pl_ingest_bronze",
+                        "type": "PipelineReference"
+                    },
+                    "waitOnCompletion": true,
+                    "parameters": {
+                        "files": {
+                            "value": "@pipeline().parameters.files",
+                            "type": "Expression"
+                        }
+                    }
+                }
+            },
+            {
+                "name": "run_silver",
+                "type": "DatabricksNotebook",
+                "dependsOn": [
+                    {
+                        "activity": "run_bronze",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "notebookPath": "/Users/serhiy.dataskools@gmail.com/silver_ecommerce",
+                    "baseParameters": {
+                        "storage_account": {
+                            "value": "@pipeline().parameters.storage_account",
+                            "type": "Expression"
+                        },
+                        "secret_scope": {
+                            "value": "@pipeline().parameters.secret_scope",
+                            "type": "Expression"
+                        }
+                    }
+                },
+                "linkedServiceName": {
+                    "referenceName": "ls_databricks",
+                    "type": "LinkedServiceReference"
+                }
+            },
+            {
+                "name": "run_gold",
+                "type": "DatabricksNotebook",
+                "dependsOn": [
+                    {
+                        "activity": "run_silver",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "notebookPath": "/Users/serhiy.dataskools@gmail.com/gold_ecommerce",
+                    "baseParameters": {
+                        "storage_account": {
+                            "value": "@pipeline().parameters.storage_account",
+                            "type": "Expression"
+                        },
+                        "secret_scope": {
+                            "value": "@pipeline().parameters.secret_scope",
+                            "type": "Expression"
+                        }
+                    }
+                },
+                "linkedServiceName": {
+                    "referenceName": "ls_databricks",
+                    "type": "LinkedServiceReference"
+                }
+            }
+        ],
+        "parameters": {
+            "files": {
+                "type": "array",
+                "defaultValue": [
+                    {
+                        "fileName": "2019-Oct.csv",
+                        "year": "2019",
+                        "month": "10"
+                    },
+                    {
+                        "fileName": "2019-Nov.csv",
+                        "year": "2019",
+                        "month": "11"
+                    }
+                ]
+            },
+            "storage_account": {
+                "type": "string",
+                "defaultValue": "stbigdatadev00001"
+            },
+            "secret_scope": {
+                "type": "string",
+                "defaultValue": "kv-scope"
+            }
+        },
+        "annotations": [],
+        "lastPublishTime": "2026-11-09T08:04:24Z"
+    },
+    "type": "Microsoft.DataFactory/factories/pipelines"
+}
