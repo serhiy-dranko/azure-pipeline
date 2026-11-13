@@ -1,0 +1,199 @@
+{
+	"name": "pl_ecommerce_main",
+	"properties": {
+		"activities": [
+			{
+				"name": "run_bronze",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pl_ingest_bronze",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"files": {
+							"value": "@pipeline().parameters.files",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "run_silver",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "run_bronze",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 60,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/serhiy.dataskools@gmail.com/silver_ecommerce",
+					"baseParameters": {
+						"storage_account": {
+							"value": "@pipeline().parameters.storage_account",
+							"type": "Expression"
+						},
+						"secret_scope": {
+							"value": "@pipeline().parameters.secret_scope",
+							"type": "Expression"
+						},
+						"load_date": {
+							"value": "@pipeline().parameters.load_date",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_databricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "run_gold",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "run_silver",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 60,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/serhiy.dataskools@gmail.com/gold_ecommerce",
+					"baseParameters": {
+						"storage_account": {
+							"value": "@pipeline().parameters.storage_account",
+							"type": "Expression"
+						},
+						"secret_scope": {
+							"value": "@pipeline().parameters.secret_scope",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_databricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "fail_at_gold_lvl",
+				"type": "Fail",
+				"dependsOn": [
+					{
+						"activity": "run_gold",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"message": {
+						"value": "Gold step failed for @{pipeline().parameters.load_date}",
+						"type": "Expression"
+					},
+					"errorCode": "GOLD_FAILED"
+				}
+			},
+			{
+				"name": "fail_on_bronze_lvl",
+				"type": "Fail",
+				"dependsOn": [
+					{
+						"activity": "run_bronze",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"message": {
+						"value": "Bronze step failed for @{pipeline().parameters.load_date}",
+						"type": "Expression"
+					},
+					"errorCode": "BRONZE_FAIL"
+				}
+			},
+			{
+				"name": "fail_on_silver_lvl",
+				"type": "Fail",
+				"dependsOn": [
+					{
+						"activity": "run_silver",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"message": {
+						"value": "Silver step failed for @{pipeline().parameters.load_date}",
+						"type": "Expression"
+					},
+					"errorCode": "SILVER_FAIL"
+				}
+			}
+		],
+		"parameters": {
+			"files": {
+				"type": "array",
+				"defaultValue": [
+					{
+						"fileName": "2019-Oct.csv",
+						"year": "2019",
+						"month": "10"
+					},
+					{
+						"fileName": "2019-Nov.csv",
+						"year": "2019",
+						"month": "11"
+					}
+				]
+			},
+			"storage_account": {
+				"type": "string",
+				"defaultValue": "stbigdatadev00001"
+			},
+			"secret_scope": {
+				"type": "string",
+				"defaultValue": "kv-scope"
+			},
+			"load_date": {
+				"type": "string",
+				"defaultValue": "2019-10-03"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2026-11-12T08:11:06Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

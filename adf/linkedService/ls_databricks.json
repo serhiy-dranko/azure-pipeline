@@ -1,0 +1,14 @@
+{
+	"name": "ls_databricks",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureDatabricks",
+		"typeProperties": {
+			"domain": "https://adb-7405608664423898.18.azuredatabricks.net",
+			"authentication": "MSI",
+			"workspaceResourceId": "/subscriptions/0a72ed9a-f2f3-4267-89ba-2d499d8da4fb/resourceGroups/rg-bigdata-dev/providers/Microsoft.Databricks/workspaces/dbw-bigdata-dev-1234",
+			"existingClusterId": "1104-140239-5vazfb1e"
+		}
+	}
+}

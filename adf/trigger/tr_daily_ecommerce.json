@@ -1,0 +1,40 @@
+{
+	"name": "tr_daily_ecommerce",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "pl_ecommerce_main",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"files": [
+						{
+							"fileName": "2019-Oct.csv",
+							"year": "2019",
+							"month": "10"
+						},
+						{
+							"fileName": "2019-Nov.csv",
+							"year": "2019",
+							"month": "11"
+						}
+					],
+					"storage_account": "stbigdatadev00001",
+					"secret_scope": "kv-scope"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 15,
+				"startTime": "2026-11-09T11:15:00",
+				"timeZone": "W. Europe Standard Time"
+			}
+		}
+	}
+}

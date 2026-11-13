@@ -1,0 +1,11 @@
+{
+	"name": "ls_adls_bigdata",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobFS",
+		"typeProperties": {
+			"url": "https://stbigdatadev00001.dfs.core.windows.net/"
+		}
+	}
+}

@@ -1,0 +1,15 @@
+{
+	"name": "adf-bigdata-dev-1234",
+	"properties": {
+		"trustModeClaimForMi": {
+			"value": "Disabled",
+			"editable": true
+		}
+	},
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "95752934-0d28-4a4b-b053-2be52e143b20",
+		"tenantId": "19db150e-1777-402b-952f-6d6c7e1a8590"
+	}
+}
