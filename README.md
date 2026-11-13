@@ -150,7 +150,10 @@ print(silver.filter("event_date = '2019-10-01'").count())   # expect 1241586
 
 | Measure | Value |
 |---|---|
-| Rows: raw / rejected / duplicates removed / silver | 109 950 743 / 256 761 / 130 646 / 109 563 336 |
+| Rows: raw  | 109 950 743 |
+| Rows: rejected  |  256 761 |
+| Rows: duplicates removed  | 130 646 |
+| Rows: silver | 109 563 336 |
 | Full pipeline run | 41 min 48 s |
 | Gold step alone | 13 min 31 s |
 | Same date run twice (2019-10-01) | 1 241 586 rows both times (no duplicates) |
