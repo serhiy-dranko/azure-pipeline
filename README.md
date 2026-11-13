@@ -228,7 +228,7 @@ Also revoke your Kaggle token in Kaggle **Settings → API**.
 ```
 azure-pipeline/
   README.md          this guide
-  docs/              architecture.png and architecture.dot (the diagram source)
+  docs/              architecture.png and md. files prepared during Week 3 and 4
   adf/               Data Factory pipeline definitions (JSON)
   notebooks/         silver_ecommerce and gold_ecommerce (exported)
   sql/queries.sql    business questions and their SQL
