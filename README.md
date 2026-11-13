@@ -1,6 +1,7 @@
-# Core Azure Pipeline: a beginner's guide
+# Core Azure Pipeline project
 
 This project takes a large public dataset of online-store clicks, copies it into a cloud data lake, cleans it, and produces small tables that answer business questions. Everything runs automatically from one pipeline in Azure Data Factory.
+Each row in the file represents an event. All events are related to products and users. Each event is like many-to-many relation between products and users.
 
 ---
 
