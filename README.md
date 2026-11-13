@@ -38,7 +38,7 @@ This project takes a large public dataset of online-store clicks, copies it into
 
 ---
 
-## 3. The picture
+## 3. The pipeline architecture
  
 ![Architecture](docs/architecture.png)
  
